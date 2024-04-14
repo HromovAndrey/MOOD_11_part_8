@@ -1,29 +1,20 @@
-# Завдання 3
-# Реалізуйте метаклас, що забороняє спадкування від
-# певних класів чи змінює порядок спадкування.
+# Завдання 4
+# Створіть метаклас, який автоматично реєструє всі
+# нові класи у певному реєстрі для подальшого
+# використання.
 
-class ForbiddenSubclass(type):
-    def __subclasscheck__(cls, subclass):
-        if cls.forbidden_class in subclass.__mro__:
-            print(f"Subclassing from {cls.forbidden_class.__name__} is not allowed.")
-            return False
-        return True
+class ClassRegistry(type):
+    registry = {}
 
-class BaseClass:
+    def __init__(cls, name, bases, attrs, **kwargs):
+        super().__init__(name, bases, attrs)
+        ClassRegistry.registry[name] = cls
+class MyClass1(metaclass=ClassRegistry):
     pass
 
-class ForbiddenClass(BaseClass, metaclass=ForbiddenSubclass):
+class MyClass2(metaclass=ClassRegistry):
     pass
-class AllowedClass(BaseClass):
-    pass
-class SubclassOfForbidden(ForbiddenClass):
-    pass
-class SubclassOfAllowed(AllowedClass):
-    pass
-
-
-
-
+print(ClassRegistry.registry)
 
 
 
