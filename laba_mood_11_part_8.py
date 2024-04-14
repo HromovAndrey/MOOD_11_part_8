@@ -1,21 +1,25 @@
-# Завдання 2
-# Створіть метаклас, що перевіряє наявність певних
-# атрибутів у всіх класах, які використовують цей
-# метаклас.
-class MetaClass2(type):
-    def __init__(cls, name, bases, dct):
-        if 'required_attribute' not in dct:
-            raise TypeError(f"Class {name} must have a 'required_attribute' attribute")
-        super().__init__(name, bases, dct)
+# Завдання 3
+# Реалізуйте метаклас, що забороняє спадкування від
+# певних класів чи змінює порядок спадкування.
 
+class ForbiddenSubclass(type):
+    def __subclasscheck__(cls, subclass):
+        if cls.forbidden_class in subclass.__mro__:
+            print(f"Subclassing from {cls.forbidden_class.__name__} is not allowed.")
+            return False
+        return True
 
-class Person(metaclass=MetaClass2):
-    age = 20
-    name = "Mary"
+class BaseClass:
+    pass
 
-    def info(self):
-        print(f"Name:{self.name}, age {self.age} ")
-
+class ForbiddenClass(BaseClass, metaclass=ForbiddenSubclass):
+    pass
+class AllowedClass(BaseClass):
+    pass
+class SubclassOfForbidden(ForbiddenClass):
+    pass
+class SubclassOfAllowed(AllowedClass):
+    pass
 
 
 
